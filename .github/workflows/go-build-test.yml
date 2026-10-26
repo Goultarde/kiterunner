@@ -27,3 +27,9 @@ jobs:
 
     - name: Test
       run: go test -v ./...
+
+    - name: Vet
+      run: go vet ./...
+
+    - name: Race test
+      run: go test -race ./...
