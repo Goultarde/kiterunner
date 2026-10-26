@@ -1,0 +1,6 @@
+.git
+.github
+dist
+benchmark
+*.md
+*.png
