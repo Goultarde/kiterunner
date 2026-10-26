@@ -28,7 +28,7 @@ func LoadJSONFile(filename string) (schema []API, err error) {
 		return
 	}
 
-	return LoadJSONBytes(data)
+	return SlowLoadJSONBytes(data)
 }
 
 func LoadJSONReader(r io.Reader) (schema []API, err error) {
@@ -36,7 +36,7 @@ func LoadJSONReader(r io.Reader) (schema []API, err error) {
 	if err != nil {
 		return nil, err
 	}
-	return LoadJSONBytes(res)
+	return SlowLoadJSONBytes(res)
 }
 
 // SlowLoadJSONFile will load the json schema from the specified file
