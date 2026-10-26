@@ -447,10 +447,11 @@ func LoadKitebuilderFile(fns []string) ScanOption {
 
 			started := time.Now()
 			initialRoutes := len(o.Routes)
-			log.Info().Str("filename", filename).Msg("loading kite wordlist")
+			stopLoading := startKiteLoading(filename)
 			var merr *multierror.Error
 			apis, err := proute.DecodeAPIProtoFile(filename)
 			if err != nil {
+				stopLoading()
 				return fmt.Errorf("failed to decode kite file: %w", err)
 			}
 			o.prouteAPIs = append(o.prouteAPIs, apis...)
@@ -463,11 +464,13 @@ func LoadKitebuilderFile(fns []string) ScanOption {
 						errors2.PrintError(v, 0)
 					}
 				} else if err != nil {
+					stopLoading()
 					return fmt.Errorf("failed to parse api: %w", err)
 				}
 
 				o.Routes = append(o.Routes, wcr...)
 			}
+			stopLoading()
 			log.Info().Str("filename", filename).Int("routes", len(o.Routes)-initialRoutes).Dur("duration", time.Since(started)).Msg("kite wordlist loaded")
 
 			o.kitebuilderAPINames = append(o.kitebuilderAPINames, filename)
@@ -477,6 +480,34 @@ func LoadKitebuilderFile(fns []string) ScanOption {
 		}
 
 		return nil
+	}
+}
+
+func startKiteLoading(filename string) func() {
+	if log.GetLogFormat() == log.JSON {
+		log.Info().Str("filename", filename).Msg("loading kite wordlist")
+		return func() {}
+	}
+
+	done := make(chan struct{})
+	finished := make(chan struct{})
+	go func() {
+		defer close(finished)
+		frames := []string{"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"}
+		for i := 0; ; i++ {
+			fmt.Fprintf(os.Stderr, "\r\033[2K%s loading kite wordlist %s", frames[i%len(frames)], filename)
+			select {
+			case <-done:
+				return
+			case <-time.After(120 * time.Millisecond):
+			}
+		}
+	}()
+
+	return func() {
+		close(done)
+		<-finished
+		fmt.Fprint(os.Stderr, "\r\033[2K")
 	}
 }
 
