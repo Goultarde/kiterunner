@@ -445,6 +445,9 @@ func LoadKitebuilderFile(fns []string) ScanOption {
 				return nil
 			}
 
+			started := time.Now()
+			initialRoutes := len(o.Routes)
+			log.Info().Str("filename", filename).Msg("loading kite wordlist")
 			var merr *multierror.Error
 			apis, err := proute.DecodeAPIProtoFile(filename)
 			if err != nil {
@@ -465,6 +468,7 @@ func LoadKitebuilderFile(fns []string) ScanOption {
 
 				o.Routes = append(o.Routes, wcr...)
 			}
+			log.Info().Str("filename", filename).Int("routes", len(o.Routes)-initialRoutes).Dur("duration", time.Since(started)).Msg("kite wordlist loaded")
 
 			o.kitebuilderAPINames = append(o.kitebuilderAPINames, filename)
 
