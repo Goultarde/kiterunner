@@ -386,7 +386,6 @@ func (o ObjectCrumb) Value(opts ...CrumbOption) string {
 		}
 		return data.Encode()
 	}
-	return ""
 }
 
 func (o ObjectCrumb) Key() string {

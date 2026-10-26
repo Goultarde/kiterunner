@@ -27,7 +27,6 @@ func getDepth(path string, depth int64) (ret string) {
 
 		if hits == depth+1 {
 			return path[0:i]
-			break
 		}
 	}
 

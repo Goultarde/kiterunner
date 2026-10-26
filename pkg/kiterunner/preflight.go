@@ -120,7 +120,7 @@ var (
 	PreflightCheckRoutes = []*http.Route{
 		{ // try a nested directory
 			Method: http.GET,
-			Path:   []byte("/" + strings.Replace(uuid.New().String(), "-", "", -1)[0:16] + "/" + strings.Replace(uuid.New().String(), "-", "", -1)[0:16] ),
+			Path:   []byte("/" + strings.Replace(uuid.New().String(), "-", "", -1)[0:16] + "/" + strings.Replace(uuid.New().String(), "-", "", -1)[0:16]),
 		},
 		{ // docroot
 			Method: http.GET,
@@ -135,18 +135,18 @@ var (
 			Path:   []byte("/"),
 		},
 		{ // docroot with auth header with post method
-			Method:  http.PUT,
-			Path:    []byte("/auth" + strings.Replace(uuid.New().String(), "-", "", -1)[0:16]),
+			Method: http.PUT,
+			Path:   []byte("/auth" + strings.Replace(uuid.New().String(), "-", "", -1)[0:16]),
 			// previously 1:1\n (MToxCg==) would cause applications to 500 instead of 401
 			// so now using 1:1 instead to trigger a baseline
-			Headers: []http.Header{{"Authorization", "Basic MTox"}},
+			Headers: []http.Header{{Key: "Authorization", Value: "Basic MTox"}},
 		},
 		{ // docroot with auth header
-			Method:  http.GET,
-			Path:    []byte("/auth" + strings.Replace(uuid.New().String(), "-", "", -1)[0:16]),
+			Method: http.GET,
+			Path:   []byte("/auth" + strings.Replace(uuid.New().String(), "-", "", -1)[0:16]),
 			// previously 1:1\n (MToxCg==) would cause applications to 500 instead of 401
 			// so now using 1:1 instead to trigger a baseline
-			Headers: []http.Header{{"Authorization", "Basic MTox"}},
+			Headers: []http.Header{{Key: "Authorization", Value: "Basic MTox"}},
 		},
 		// { // method body mismatch. Catches google 400s
 		// 	Method:  http.GET,

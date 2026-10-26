@@ -3,6 +3,7 @@ package proute
 import (
 	"fmt"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -97,7 +98,14 @@ func objectCrumbFromSchema(name string, v kitebuilder.Typer) (Crumb, error) {
 			ret.Elements = append(ret.Elements, c)
 		}
 
-		for k, vv := range v.GetProperties() {
+		properties := v.GetProperties()
+		keys := make([]string, 0, len(properties))
+		for k := range properties {
+			keys = append(keys, k)
+		}
+		sort.Strings(keys)
+		for _, k := range keys {
+			vv := properties[k]
 			c, err := objectCrumbFromSchema(k, &vv)
 			if err != nil {
 				return ret, &errors.ParserError{
@@ -315,16 +323,12 @@ func objectCrumbFromSchema(name string, v kitebuilder.Typer) (Crumb, error) {
 				return RandomStringCrumb{Name: name}, merr.ErrorOrNil()
 			}
 		}
-		return RandomStringCrumb{Name: name}, nil
 		// %+v map[:1615 binary:5 bytes:10 date:21 date-format:1 date-time:47 datetime:6 duration:14
 		// email:10 locale:2 markdown:3 password:4 uri:8 uuid:6]
 	default:
 		return ret, fmt.Errorf("unexpected type %s", v.GetType())
 		// %+v map[:376 array:283 boolean:199 integer:250 jwttoken:1 number:72 object:68 string:1752]
 	}
-	// TODO: Handle enums
-
-	return ret, fmt.Errorf("unexpected type %s", v.GetType())
 }
 
 func FromKitebuilderAPIs(src []kitebuilder.API) ([]API, error) {

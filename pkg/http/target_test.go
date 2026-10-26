@@ -3,7 +3,6 @@ package http
 import (
 	"bytes"
 	"reflect"
-	"sync"
 	"testing"
 	"time"
 
@@ -13,7 +12,6 @@ import (
 type fields struct {
 	Hostname              string
 	HostHeader            []byte
-	muHostHeader          sync.Mutex
 	IP                    string
 	Port                  int
 	IsTLS                 bool
@@ -54,7 +52,6 @@ func TestTarget_AppendHost(t1 *testing.T) {
 			t := &Target{
 				Hostname:       tt.fields.Hostname,
 				HostHeader:     tt.fields.HostHeader,
-				muHostHeader:   tt.fields.muHostHeader,
 				IP:             tt.fields.IP,
 				Port:           tt.fields.Port,
 				IsTLS:          tt.fields.IsTLS,
@@ -93,7 +90,6 @@ func TestTarget_AppendHostHeader(t1 *testing.T) {
 			t := &Target{
 				Hostname:       tt.fields.Hostname,
 				HostHeader:     tt.fields.HostHeader,
-				muHostHeader:   tt.fields.muHostHeader,
 				IP:             tt.fields.IP,
 				Port:           tt.fields.Port,
 				IsTLS:          tt.fields.IsTLS,
@@ -129,7 +125,6 @@ func TestTarget_AppendIPOrHostname(t1 *testing.T) {
 			t := &Target{
 				Hostname:       tt.fields.Hostname,
 				HostHeader:     tt.fields.HostHeader,
-				muHostHeader:   tt.fields.muHostHeader,
 				IP:             tt.fields.IP,
 				Port:           tt.fields.Port,
 				IsTLS:          tt.fields.IsTLS,
@@ -164,7 +159,6 @@ func TestTarget_AppendScheme(t1 *testing.T) {
 			t := &Target{
 				Hostname:       tt.fields.Hostname,
 				HostHeader:     tt.fields.HostHeader,
-				muHostHeader:   tt.fields.muHostHeader,
 				IP:             tt.fields.IP,
 				Port:           tt.fields.Port,
 				IsTLS:          tt.fields.IsTLS,
@@ -199,7 +193,6 @@ func TestTarget_HTTPClient(t1 *testing.T) {
 			t := &Target{
 				Hostname:       tt.fields.Hostname,
 				HostHeader:     tt.fields.HostHeader,
-				muHostHeader:   tt.fields.muHostHeader,
 				IP:             tt.fields.IP,
 				Port:           tt.fields.Port,
 				IsTLS:          tt.fields.IsTLS,
@@ -230,7 +223,6 @@ func TestTarget_HitIncr(t1 *testing.T) {
 			t := &Target{
 				Hostname:       tt.fields.Hostname,
 				HostHeader:     tt.fields.HostHeader,
-				muHostHeader:   tt.fields.muHostHeader,
 				IP:             tt.fields.IP,
 				Port:           tt.fields.Port,
 				IsTLS:          tt.fields.IsTLS,
@@ -261,7 +253,6 @@ func TestTarget_HitReset(t1 *testing.T) {
 			t := &Target{
 				Hostname:       tt.fields.Hostname,
 				HostHeader:     tt.fields.HostHeader,
-				muHostHeader:   tt.fields.muHostHeader,
 				IP:             tt.fields.IP,
 				Port:           tt.fields.Port,
 				IsTLS:          tt.fields.IsTLS,
@@ -292,7 +283,6 @@ func TestTarget_Hits(t1 *testing.T) {
 			t := &Target{
 				Hostname:       tt.fields.Hostname,
 				HostHeader:     tt.fields.HostHeader,
-				muHostHeader:   tt.fields.muHostHeader,
 				IP:             tt.fields.IP,
 				Port:           tt.fields.Port,
 				IsTLS:          tt.fields.IsTLS,
@@ -323,7 +313,6 @@ func TestTarget_Host(t1 *testing.T) {
 			t := &Target{
 				Hostname:       tt.fields.Hostname,
 				HostHeader:     tt.fields.HostHeader,
-				muHostHeader:   tt.fields.muHostHeader,
 				IP:             tt.fields.IP,
 				Port:           tt.fields.Port,
 				IsTLS:          tt.fields.IsTLS,
@@ -354,7 +343,6 @@ func TestTarget_String(t1 *testing.T) {
 			t := &Target{
 				Hostname:       tt.fields.Hostname,
 				HostHeader:     tt.fields.HostHeader,
-				muHostHeader:   tt.fields.muHostHeader,
 				IP:             tt.fields.IP,
 				Port:           tt.fields.Port,
 				IsTLS:          tt.fields.IsTLS,
@@ -387,7 +375,6 @@ func TestTarget_Write(t1 *testing.T) {
 			t := &Target{
 				Hostname:       tt.fields.Hostname,
 				HostHeader:     tt.fields.HostHeader,
-				muHostHeader:   tt.fields.muHostHeader,
 				IP:             tt.fields.IP,
 				Port:           tt.fields.Port,
 				IsTLS:          tt.fields.IsTLS,
@@ -431,7 +418,6 @@ func TestTarget_appendColonPort(t1 *testing.T) {
 			t := &Target{
 				Hostname:       tt.fields.Hostname,
 				HostHeader:     tt.fields.HostHeader,
-				muHostHeader:   tt.fields.muHostHeader,
 				IP:             tt.fields.IP,
 				Port:           tt.fields.Port,
 				IsTLS:          tt.fields.IsTLS,
@@ -463,7 +449,7 @@ func Example_targetUsage() {
 	t.ParseHostHeader()
 
 	req := Request{
-		Route:  &Route{Path: []byte( "/")},
+		Route:  &Route{Path: []byte("/")},
 		Target: t,
 	}
 	config := &Config{

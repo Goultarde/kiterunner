@@ -306,9 +306,9 @@ func LoadTextWordlist(fns []string, extensions []string, dirsearchCompatabilityM
 
 				// do all the extensions
 				for _, ext := range extensions {
-					path := []byte( v )
+					path := []byte(v)
 					if dirsearchCompatabilityMode {
-						path = bytes.Replace(path, []byte("%EXT%"), []byte( ext ), -1)
+						path = bytes.Replace(path, []byte("%EXT%"), []byte(ext), -1)
 					} else {
 						path = append(path, "."...)
 						path = append(path, ext...)
@@ -365,12 +365,12 @@ func LoadAssetnoteWordlist(fns []string, extensions []string, dirsearchCompatabi
 				if vv[0] != '/' {
 					vv = "/" + vv
 				}
-				o.Routes = append(o.Routes, &http.Route{Method: http.GET, Path: []byte( vv )})
+				o.Routes = append(o.Routes, &http.Route{Method: http.GET, Path: []byte(vv)})
 
 				for _, ext := range extensions {
-					path := []byte( vv )
+					path := []byte(vv)
 					if dirsearchCompatabilityMode {
-						path = bytes.Replace(path, []byte("%EXT%"), []byte( ext ), -1)
+						path = bytes.Replace(path, []byte("%EXT%"), []byte(ext), -1)
 					} else {
 						path = append(path, "."...)
 						path = append(path, ext...)
@@ -493,7 +493,7 @@ func AddHeaders(hs []string) ScanOption {
 			if len(sp) != 2 {
 				return fmt.Errorf("invalid header format: %s", h)
 			}
-			o.Headers = append(o.Headers, http.Header{sp[0], sp[1]})
+			o.Headers = append(o.Headers, http.Header{Key: sp[0], Value: sp[1]})
 		}
 		return nil
 	}
@@ -505,7 +505,7 @@ func AddHeader(h string) ScanOption {
 		if len(sp) != 2 {
 			return fmt.Errorf("invalid header format: %s", h)
 		}
-		o.Headers = append(o.Headers, http.Header{sp[0], sp[1]})
+		o.Headers = append(o.Headers, http.Header{Key: sp[0], Value: sp[1]})
 		return nil
 	}
 }

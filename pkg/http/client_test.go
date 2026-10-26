@@ -83,11 +83,11 @@ func TestDoClientHeaderBodyRequest(t *testing.T) {
 		port, _  = strconv.Atoi(strings.SplitN(simpleServer.Listener.Addr().String(), ":", 2)[1])
 		req      = Request{
 			Route: &Route{
-				Path: []byte( path ),
+				Path: []byte(path),
 				Headers: []Header{
 					{Key: "route-header", Value: "1"},
 					{Key: "overlap-header", Value: "2"}},
-				Body: []byte( "route body" ),
+				Body: []byte("route body"),
 			},
 			Target: &Target{
 				Hostname: hostname,
@@ -149,7 +149,7 @@ func TestDoClientHostHeaderRequest(t *testing.T) {
 		hostname = strings.SplitN(simpleServer.Listener.Addr().String(), ":", 2)[0]
 		port, _  = strconv.Atoi(strings.SplitN(simpleServer.Listener.Addr().String(), ":", 2)[1])
 		req      = Request{
-			Route: &Route{Path: []byte( path )},
+			Route: &Route{Path: []byte(path)},
 			Target: &Target{
 				HostHeader: []byte("diff-hostname-123"),
 				IP:         hostname,
@@ -204,7 +204,7 @@ func TestDoClientHostHeaderRequestCustom(t *testing.T) {
 		hostname = strings.SplitN(simpleServer.Listener.Addr().String(), ":", 2)[0]
 		port, _  = strconv.Atoi(strings.SplitN(simpleServer.Listener.Addr().String(), ":", 2)[1])
 		req      = Request{
-			Route: &Route{Path: []byte( path )},
+			Route: &Route{Path: []byte(path)},
 			Target: &Target{
 				HostHeader: []byte("no-port-host-header"),
 				Hostname:   "diff-hostname-123",
@@ -322,7 +322,6 @@ func TestDoClientRedirectRequest(t *testing.T) {
 	assert.Nil(t, err)
 
 	// First Request
-	resp = resp
 	// we expect the request uri to be empty
 	assert.Equal(t, "", string(resp.URI))
 	// it should be a redirect
@@ -397,7 +396,6 @@ func TestDoClientRedirectRequestSameFullHost(t *testing.T) {
 	assert.Nil(t, err)
 
 	// First Request
-	resp = resp
 	// we expect the request uri to be empty
 	assert.Equal(t, "", string(resp.URI))
 	// it should be a redirect
@@ -477,7 +475,6 @@ func TestDoClientRedirectRequestMultiHost(t *testing.T) {
 	assert.Nil(t, err)
 
 	// First Request
-	resp = resp
 	// we expect the request uri to be empty
 	assert.Equal(t, "", string(resp.URI))
 	// it should be a redirect

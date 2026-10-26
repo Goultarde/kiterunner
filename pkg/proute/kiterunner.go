@@ -62,11 +62,11 @@ func (r Route) ToKiterunner(extraHeaders ...KV) (*http.Route, error) {
 		Method: http.Method(method),
 	}
 	for _, h := range r.Headers(true) {
-		ret.Headers = append(ret.Headers, http.Header{h.Key, h.Value})
+		ret.Headers = append(ret.Headers, http.Header{Key: h.Key, Value: h.Value})
 	}
 
 	for _, h := range extraHeaders {
-		ret.Headers = append(ret.Headers, http.Header{h.Key, h.Value})
+		ret.Headers = append(ret.Headers, http.Header{Key: h.Key, Value: h.Value})
 	}
 
 	ct := ContentTypeFormEncoded
@@ -82,14 +82,14 @@ func (r Route) ToKiterunner(extraHeaders ...KV) (*http.Route, error) {
 	// only add content type if there is a body specified
 	// or if its a non-get type
 	if len(ret.Body) > 0 || (string(ret.Method) != string(http.GET)) {
-		ret.Headers = append(ret.Headers, http.Header{"Content-Type", string(ct)})
+		ret.Headers = append(ret.Headers, http.Header{Key: "Content-Type", Value: string(ct)})
 	}
 
 	tmp, err := r.Path(false)
 	if err != nil {
 		return ret, err
 	}
-	ret.Path = []byte( tmp )
+	ret.Path = []byte(tmp)
 
 	tmp, err = r.Query(false)
 	ret.Query = []byte(tmp)
