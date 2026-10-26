@@ -362,9 +362,6 @@ func (e *Engine) RunAsync(ctx context.Context) (tx chan *http.Target, rx chan *R
 		return nil, nil, fmt.Errorf("failed to start. invalid settings: %w", err)
 	}
 
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-
 	var (
 		maxMessages = e.config.MaxParallelHosts * e.config.MaxConnPerHost
 		input       = make(chan *http.Target, e.config.MaxParallelHosts)
