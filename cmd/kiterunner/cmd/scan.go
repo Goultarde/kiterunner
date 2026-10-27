@@ -33,6 +33,7 @@ var (
 
 	timeout      = 3 * time.Second
 	maxRedirects = 3
+	scanProxy    = ""
 
 	preflightDepth   int64 = 1
 	blacklistDomains       = []string{}
@@ -80,6 +81,7 @@ kr scan domains.txt -W rafter.txt -D=0 # this just uses the words as a normal wo
 			scan.MaxRedirects(maxRedirects),
 			scan.ContentLengthIgnoreRanges(lengthIgnoreRange),
 			scan.Timeout(timeout),
+			scan.Proxy(scanProxy),
 			scan.Delay(delay),
 			scan.AddHeaders(headers),
 			scan.LoadKitebuilderFile(kitebuilderFiles),
@@ -139,6 +141,7 @@ func init() {
 	scanCmd.Flags().StringVar(&userAgent, "user-agent", userAgent, "user agent to use for requests")
 	scanCmd.Flags().DurationVarP(&timeout, "timeout", "t", timeout, "timeout to use on all requests")
 	scanCmd.Flags().IntVar(&maxRedirects, "max-redirects", maxRedirects, "maximum number of redirects to follow")
+	scanCmd.Flags().StringVar(&scanProxy, "proxy", scanProxy, "HTTP proxy for every scan request, including preflight and redirects")
 	scanCmd.Flags().StringVar(&forceMethod, "force-method", forceMethod, "whether to ignore the methods specified in the ogl file and force this method")
 
 	scanCmd.Flags().IntSliceVar(&successStatusCodes, "success-status-codes", successStatusCodes,

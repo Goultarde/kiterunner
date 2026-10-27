@@ -54,6 +54,7 @@ cat hosts | kr brute - -w wordlist.txt -e aspx,asmx,ashx,asp --dirsearch-compat
 			scan.MaxRedirects(maxRedirects),
 			scan.ContentLengthIgnoreRanges(lengthIgnoreRange),
 			scan.Timeout(timeout),
+			scan.Proxy(scanProxy),
 			scan.Delay(delay),
 			scan.AddHeaders(headers),
 			scan.LoadTextWordlist(textWordlist, extensions, dirsearchCompatabilityMode),
@@ -114,6 +115,7 @@ func init() {
 	bruteCmd.Flags().StringVar(&userAgent, "user-agent", userAgent, "user agent to use for requests")
 	bruteCmd.Flags().DurationVarP(&timeout, "timeout", "t", timeout, "timeout to use on all requests")
 	bruteCmd.Flags().IntVar(&maxRedirects, "max-redirects", maxRedirects, "maximum number of redirects to follow")
+	bruteCmd.Flags().StringVar(&scanProxy, "proxy", scanProxy, "HTTP proxy for every scan request, including preflight and redirects")
 	bruteCmd.Flags().StringVar(&forceMethod, "force-method", forceMethod, "whether to ignore the methods specified in the ogl file and force this method")
 
 	bruteCmd.Flags().IntSliceVar(&successStatusCodes, "success-status-codes", successStatusCodes,

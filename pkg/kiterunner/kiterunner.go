@@ -62,7 +62,7 @@ func (e *Engine) Config() *Config {
 func handleTarget(ctx context.Context, target *http.Target, reqChan chan *ReqMsg, rm http.RouteMap, config *Config) error {
 	// we first parse the host header to ensure its populated in case its nil
 	target.ParseHostHeader()
-	c := target.HTTPClient(config.MaxConnPerHost, config.HTTP.Timeout)
+	c := target.HTTPClientWithProxy(config.MaxConnPerHost, config.HTTP.Timeout, config.HTTP.Proxy)
 	preflightChecks := len(config.PreflightCheckRoutes)
 
 	// we expect N routes for the number of requests + (M + 1) * baselines + 1 root request

@@ -2,6 +2,7 @@ package kiterunner
 
 import (
 	"fmt"
+	"net/url"
 	"strings"
 	"sync/atomic"
 	"time"
@@ -79,6 +80,12 @@ func (c *Config) Validate() error {
 	if c.ProgressBar == nil {
 		c.ProgressBar = &NullProgressBar{}
 	}
+	if c.HTTP.Proxy != "" {
+		u, err := url.Parse(c.HTTP.Proxy)
+		if err != nil || u.Host == "" || (u.Scheme != "http" && u.Scheme != "https") {
+			return fmt.Errorf("invalid HTTP proxy %q", c.HTTP.Proxy)
+		}
+	}
 
 	actualValidators := make([]RequestValidator, 0)
 	for _, v := range c.RequestValidators {
@@ -97,6 +104,10 @@ func MaxTimeout(n time.Duration) ConfigOption {
 	return func(c *Config) {
 		c.HTTP.Timeout = n
 	}
+}
+
+func Proxy(value string) ConfigOption {
+	return func(c *Config) { c.HTTP.Proxy = value }
 }
 
 func Delay(n time.Duration) ConfigOption {
@@ -181,7 +192,6 @@ func SetPreflightCheckRoutes(r []*http.Route) ConfigOption {
 		o.PreflightCheckRoutes = append(o.PreflightCheckRoutes[:0], r...)
 	}
 }
-
 
 func HTTPExtraHeaders(h []http.Header) ConfigOption {
 	return func(o *Config) {

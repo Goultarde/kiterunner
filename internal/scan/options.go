@@ -49,6 +49,7 @@ type ScanOptions struct {
 	ProgressBar              bool
 	QuarantineThreshold      int64
 	PreflightDepth           int64
+	Proxy                    string
 
 	KitebuilderFullScan bool
 	SuccessStatusCodes  map[int]interface{}
@@ -77,6 +78,7 @@ func (s ScanOptions) KiterunnerOptions() []kiterunner.ConfigOption {
 		kiterunner.MaxParallelHosts(s.MaxParallelHosts),
 		kiterunner.MaxConnPerHost(s.MaxConnPerHost),
 		kiterunner.MaxTimeout(s.Timeout),
+		kiterunner.Proxy(s.Proxy),
 		kiterunner.Delay(s.Delay),
 		kiterunner.ReadHeaders(false),
 		kiterunner.ReadBody(false),
@@ -633,6 +635,10 @@ func PreflightDepth(n int64) ScanOption {
 		o.PreflightDepth = n
 		return nil
 	}
+}
+
+func Proxy(value string) ScanOption {
+	return func(o *ScanOptions) error { o.Proxy = value; return nil }
 }
 
 type ScanOption func(o *ScanOptions) error
