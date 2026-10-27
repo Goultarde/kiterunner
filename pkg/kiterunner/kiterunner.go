@@ -396,7 +396,7 @@ func (e *Engine) RunAsync(ctx context.Context) (tx chan *http.Target, rx chan *R
 							Bytes("target", t.Bytes()).
 							Msg("failed to handle target")
 						if errors.Is(err, ErrTargetQuarantined) {
-							log.Info().Bytes("target", t.Bytes()).Msg("Target quarantined")
+							log.Warn().Bytes("target", t.Bytes()).Int64("threshold", e.config.QuarantineThreshold).Msg("target quarantined; scan stopped for this target")
 						}
 					}
 				}

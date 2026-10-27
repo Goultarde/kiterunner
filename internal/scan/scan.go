@@ -79,6 +79,9 @@ func ScanDomainOrFile(ctx context.Context, domainOrFile string, opts ...ScanOpti
 	}
 
 	quickRoutes := http.GroupRouteDepth(http.UniqueSource(routeSlice), s.PreflightDepth)
+	// The intermediate API graph is no longer needed after quick routes are built.
+	// Keeping it alongside the expanded routes doubles the live route representation.
+	s.prouteAPIs = nil
 
 	if true {
 		fields := map[string]interface{}{
