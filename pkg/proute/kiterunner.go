@@ -23,10 +23,11 @@ func APIsToKiterunnerRoutes(api []API) ([]*http.Route, error) {
 func ToKiterunnerRoutes(api API) ([]*http.Route, error) {
 	var merr *multierror.Error
 
-	ret := make([]*http.Route, 0)
+	ret := make([]*http.Route, 0, len(api.Routes))
+	extraHeaders := api.Headers(true)
 	for _, v := range api.Routes {
 		// Skip these options since we don't actually care about the content here
-		r, err := v.ToKiterunner(api.Headers(true)...)
+		r, err := v.ToKiterunner(extraHeaders...)
 		if err != nil {
 			multierror.Append(merr, err)
 		}
