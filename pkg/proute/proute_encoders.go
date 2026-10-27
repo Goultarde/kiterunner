@@ -1,6 +1,5 @@
 package proute
 
-
 import (
 	"encoding/gob"
 	"io"
@@ -96,6 +95,33 @@ func DecodeProtoAPI(r io.Reader) (APIS, error) {
 	return tmp.APIS(), nil
 }
 
+// DecodeProtoAPIFunc decodes each API without materializing a second APIS slice.
+func DecodeProtoAPIFunc(r io.Reader, fn func(API) error) error {
+	data, err := ioutil.ReadAll(r)
+	if err != nil {
+		return errors.Wrap(err, "failed to read all from reader")
+	}
+	var tmp ProtoAPIS
+	if err := proto.Unmarshal(data, &tmp); err != nil {
+		return errors.Wrap(err, "failed to unmarshal data")
+	}
+	for _, api := range tmp.APIs {
+		if err := fn(api.API()); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func DecodeProtoAPIFuncFile(filename string, fn func(API) error) error {
+	f, err := os.Open(filename)
+	if err != nil {
+		return errors.Wrap(err, "failed to open file")
+	}
+	defer f.Close()
+	return DecodeProtoAPIFunc(f, fn)
+}
+
 // DecodeGobAPI will decode from the given reader, returning the decoded APIs
 func DecodeGobAPI(r io.Reader) (APIS, error) {
 	RegisterGobs()
@@ -107,4 +133,3 @@ func DecodeGobAPI(r io.Reader) (APIS, error) {
 
 	return ret, nil
 }
-

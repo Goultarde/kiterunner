@@ -451,14 +451,8 @@ func LoadKitebuilderFile(fns []string) ScanOption {
 			initialRoutes := len(o.Routes)
 			stopLoading := startKiteLoading(filename)
 			var merr *multierror.Error
-			apis, err := proute.DecodeAPIProtoFile(filename)
-			if err != nil {
-				stopLoading()
-				return fmt.Errorf("failed to decode kite file: %w", err)
-			}
-			o.prouteAPIs = append(o.prouteAPIs, apis...)
-
-			for _, v := range apis {
+			err := proute.DecodeProtoAPIFuncFile(filename, func(v proute.API) error {
+				o.prouteAPIs = append(o.prouteAPIs, v)
 				wcr, err := proute.ToKiterunnerRoutes(v)
 				if errors.As(err, &merr) {
 					log.Error().Str("id", v.ID).Msg("errors while parsing api")
@@ -466,19 +460,20 @@ func LoadKitebuilderFile(fns []string) ScanOption {
 						errors2.PrintError(v, 0)
 					}
 				} else if err != nil {
-					stopLoading()
 					return fmt.Errorf("failed to parse api: %w", err)
 				}
 
 				o.Routes = append(o.Routes, wcr...)
+				return nil
+			})
+			if err != nil {
+				stopLoading()
+				return fmt.Errorf("failed to decode kite file: %w", err)
 			}
 			stopLoading()
 			log.Info().Str("filename", filename).Int("routes", len(o.Routes)-initialRoutes).Dur("duration", time.Since(started)).Msg("kite wordlist loaded")
 
 			o.kitebuilderAPINames = append(o.kitebuilderAPINames, filename)
-
-			// clear it so we can garbage collect it
-			apis = proute.APIS{}
 		}
 
 		return nil
