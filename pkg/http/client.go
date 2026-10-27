@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/assetnote/kiterunner/pkg/log"
@@ -42,6 +43,7 @@ func NewHTTPClientWithProxy(host string, tls bool, proxy string) *HTTPClient {
 }
 
 func proxyDialer(proxy string) fasthttp.DialFunc {
+	proxy = normalizeProxyURL(proxy)
 	u, err := url.Parse(proxy)
 	if err != nil || u.Host == "" || (u.Scheme != "http" && u.Scheme != "https") {
 		panic(fmt.Sprintf("invalid HTTP proxy %q", proxy))
@@ -51,6 +53,13 @@ func proxyDialer(proxy string) fasthttp.DialFunc {
 		addr = u.User.String() + "@" + addr
 	}
 	return fasthttpproxy.FasthttpHTTPDialer(addr)
+}
+
+func normalizeProxyURL(proxy string) string {
+	if !strings.Contains(proxy, "://") {
+		return "http://" + proxy
+	}
+	return proxy
 }
 
 // Config provides all the options available to a request, this is used by DoClient

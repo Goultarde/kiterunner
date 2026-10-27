@@ -81,7 +81,11 @@ func (c *Config) Validate() error {
 		c.ProgressBar = &NullProgressBar{}
 	}
 	if c.HTTP.Proxy != "" {
-		u, err := url.Parse(c.HTTP.Proxy)
+		proxy := c.HTTP.Proxy
+		if !strings.Contains(proxy, "://") {
+			proxy = "http://" + proxy
+		}
+		u, err := url.Parse(proxy)
 		if err != nil || u.Host == "" || (u.Scheme != "http" && u.Scheme != "https") {
 			return fmt.Errorf("invalid HTTP proxy %q", c.HTTP.Proxy)
 		}
