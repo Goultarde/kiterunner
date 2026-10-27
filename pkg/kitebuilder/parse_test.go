@@ -34,6 +34,16 @@ func TestLoadJSONBytes(t *testing.T) {
 	}
 }
 
+func TestSlowLoadJSONBytesAcceptsObjectRoot(t *testing.T) {
+	got, err := SlowLoadJSONBytes([]byte(`{"ksuid":"api-1","url":"example.test","paths":{}}`))
+	if err != nil {
+		t.Fatalf("SlowLoadJSONBytes() error = %v", err)
+	}
+	if len(got) != 1 || got[0].ID != "api-1" {
+		t.Fatalf("SlowLoadJSONBytes() = %#v, want one API", got)
+	}
+}
+
 func TestLoadJSONFile(t *testing.T) {
 	type args struct {
 		filename string

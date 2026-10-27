@@ -69,13 +69,22 @@ func LoadJSONBytes(buf []byte) ([]API, error) {
 // This is a painful manual process when the kitebuilder spec was non-finalised
 func SlowLoadJSONBytes(buf []byte) ([]API, error) {
 	var (
-		ret    []API
-		all    []interface{}
+		ret  []API
+		all  []interface{}
 		merr = &multierror.Error{}
 	)
 	log.Debug().Msg("beginning slow load of json bytes")
-	if err := json.Unmarshal(buf, &all); err != nil {
+	var root interface{}
+	if err := json.Unmarshal(buf, &root); err != nil {
 		return ret, fmt.Errorf("failed to unmarshal json: %w", err)
+	}
+	switch v := root.(type) {
+	case []interface{}:
+		all = v
+	case map[string]interface{}:
+		all = []interface{}{v}
+	default:
+		return ret, fmt.Errorf("failed to unmarshal json: expected object or array, got %T", root)
 	}
 
 	for _, v := range all {
