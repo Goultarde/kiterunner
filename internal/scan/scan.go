@@ -62,6 +62,9 @@ func ScanDomainOrFile(ctx context.Context, domainOrFile string, opts ...ScanOpti
 			return fmt.Errorf("failed to apply option: %w", err)
 		}
 	}
+	if err := s.Validate(); err != nil {
+		return fmt.Errorf("invalid scan options: %w", err)
+	}
 	log.Debug().Msgf("Options loaded: \n%s", s)
 
 	// only scan what we want to scan
